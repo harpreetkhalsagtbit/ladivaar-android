@@ -36,23 +36,25 @@ public class MainPage extends ListFragment implements AdapterView.OnItemClickLis
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        JSONArray m_jArry = null;
-        String[] _tatkra = null;
+//        JSONArray m_jArry = null;
+//        String[] _tatkra = null;
+//
+//        try {
+//            m_jArry = new JSONArray(loadJSONFromAsset("tatkara.json"));
+//            _tatkra = new String[m_jArry.length()];
+//            for (int i = 0; i < m_jArry.length(); i++) {
+//                JSONObject jsonobject = m_jArry.getJSONObject(i);
+//                _tatkra[i] = jsonobject.getString("name");
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        ArrayList<String> lst = new ArrayList<String>(Arrays.asList(_tatkra));
+//        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, lst);
+//        adapter.setNotifyOnChange(true);
 
-        try {
-            m_jArry = new JSONArray(loadJSONFromAsset("tatkara.json"));
-            _tatkra = new String[m_jArry.length()];
-            for (int i = 0; i < m_jArry.length(); i++) {
-                JSONObject jsonobject = m_jArry.getJSONObject(i);
-                _tatkra[i] = jsonobject.getString("name");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        ArrayList<String> lst = new ArrayList<String>(Arrays.asList(_tatkra));
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, lst);
-        adapter.setNotifyOnChange(true);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.listOfBaanis, R.layout.simple_list_item);
         setListAdapter(adapter);
         comm = (Communicater) getActivity();
         getListView().setOnItemClickListener(this);

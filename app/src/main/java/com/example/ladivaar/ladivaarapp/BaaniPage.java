@@ -22,11 +22,6 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.baanipage, container, false);
-        if(savedInstanceState == null) {
-            Log.d("New Create","New Create");
-        } else {
-            index = savedInstanceState.getInt("index",0);
-        }
         return view;
     }
 
@@ -37,10 +32,16 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        Log.d("Activity Created","Created");
-        super.onActivityCreated(savedInstanceState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("index", index);
+    }
+
+    public void createScreen() {
         ScrollView baaniContentLayout = (ScrollView) getView().findViewById(R.id.baaniContentLayout);
+        if(baaniContentLayout.getChildCount() > 0) {
+            baaniContentLayout.removeAllViews();
+        }
         FlowLayout _container = new FlowLayout(getActivity());
         _container.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
         _container.setPadding(30,30,0,0);
@@ -48,20 +49,33 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
         String[] descriptions=getResources().getStringArray(R.array.gurbani);
         String data = descriptions[index];
         String[] textArray = data.split("\\s+");
-            for( int i = 0; i < textArray.length; i++ )
-            {
-                MyTextView textView = new MyTextView(getActivity());
-                textView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                textView.setText(textArray[i]);
-                _container.addView(textView);
-                textView.setOnTouchListener((View.OnTouchListener) this);
-            }
+        for( int i = 0; i < textArray.length; i++ )
+        {
+            MyTextView textView = new MyTextView(getActivity());
+            textView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+            textView.setText(textArray[i]);
+            _container.addView(textView);
+            textView.setOnTouchListener((View.OnTouchListener) this);
+        }
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d("Activity Created","Created");
+        if(savedInstanceState == null) {
+            Log.d("New Create","New Create");
+        } else {
+            Log.d("Got index","New Create");
+            index = savedInstanceState.getInt("index",0);
+            Log.d("Got index", String.valueOf(index));
+        }
+        super.onActivityCreated(savedInstanceState);
+        createScreen();
     }
 
     public void changeData(int index) {
         this.index = index;
-        Log.d("CHange Data", "CHange Data");
+        Log.d("CHange Data", String.valueOf(index));
     }
 
     @Override

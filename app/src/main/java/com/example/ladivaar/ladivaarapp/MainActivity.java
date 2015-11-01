@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements Communicater{
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements Communicater{
     MainPage _mainPage;
     BaaniPage _baaniPage;
     FragmentManager manager;
-
+    int index=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,32 @@ public class MainActivity extends AppCompatActivity implements Communicater{
 //            }
 //        });
 
+        ImageView _back = (ImageView)findViewById(R.id.imageView1);
+        ImageView _next = (ImageView)findViewById(R.id.imageView2);
+        _back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("before Index is", String.valueOf(index));
+                if(index > 0) {
+                    index--;
+                    _baaniPage.changeData(index);
+                    _baaniPage.createScreen();
+                }
+                Log.d("Index is", String.valueOf(index));
+            }
+        });
+
+        _next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("before Index is", String.valueOf(index));
+                Log.d("Index is", String.valueOf(index));
+                index++;
+                _baaniPage.changeData(index);
+                _baaniPage.createScreen();
+
+            }
+        });
 
         final EditText edit_txt = (EditText) findViewById(R.id.searchbox);
         edit_txt.setOnEditorActionListener(new EditText.OnEditorActionListener() {
@@ -52,14 +79,19 @@ public class MainActivity extends AppCompatActivity implements Communicater{
             }
         });
 
+        manager = getFragmentManager();
+        _baaniPage = new BaaniPage();
         if(savedInstanceState == null) {
             _mainPage = new MainPage();
-            _baaniPage = new BaaniPage();
-            manager = getFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.add(R.id.my_layout, _mainPage, "MainFragment");
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             transaction.commit();
+        } else {
+            Log.d("here","here");
+            if(_baaniPage == null) {
+                Log.d("yes null here","here");
+            }
         }
     }
 
@@ -86,7 +118,28 @@ public class MainActivity extends AppCompatActivity implements Communicater{
     }
 
     @Override
-    public void respond(int index) {
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0 ){
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
+    @Override
+    public void respond(int index) {
+        Log.d("INside respond", "working");
+        this.index = index;
+        if(manager != null && _baaniPage != null) {
+            Log.d("2 INside respond", "working");
+            _baaniPage.changeData(index);
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.my_layout, _baaniPage, "BaaniFragment");
+            transaction.addToBackStack("BackToMainPage");
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            transaction.commit();
+        } else {
+            Log.d("else respod", "working");
+        }
     }
 }
