@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.ladivaar.ladivaarapp.MyTextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:padding="5dp"
+    android:textSize="32sp"
+    customfontdemo:fontName="NotoSansGurmukhi-Regular.ttf"
+    android:id="@+id/textView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:customfontdemo="http://schemas.android.com/apk/res-auto" />

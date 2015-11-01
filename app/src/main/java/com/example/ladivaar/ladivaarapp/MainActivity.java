@@ -1,5 +1,7 @@
 package com.example.ladivaar.ladivaarapp;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,7 +16,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Communicater{
+
+    MainPage _mainPage;
+    BaaniPage _baaniPage;
+    FragmentManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,16 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        if(savedInstanceState == null) {
+            _mainPage = new MainPage();
+            _baaniPage = new BaaniPage();
+            manager = getFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.my_layout, _mainPage, "MainFragment");
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            transaction.commit();
+        }
     }
 
     @Override
@@ -67,5 +83,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void respond(int index) {
+
     }
 }
