@@ -49,6 +49,7 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
         String[] descriptions=getResources().getStringArray(R.array.gurbani);
         String data = descriptions[index];
         String[] textArray = data.split("\\s+");
+        Log.d("ds", data );
         for( int i = 0; i < textArray.length; i++ )
         {
             MyTextView textView = new MyTextView(getActivity());
@@ -58,6 +59,7 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
             _container.addView(textView);
             textView.setOnTouchListener((View.OnTouchListener) this);
         }
+        baaniContentLayout.fullScroll(ScrollView.FOCUS_UP);
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

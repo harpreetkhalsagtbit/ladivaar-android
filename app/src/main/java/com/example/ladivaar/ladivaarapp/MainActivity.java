@@ -7,6 +7,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -72,7 +74,10 @@ public class MainActivity extends AppCompatActivity implements Communicater{
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     Log.i("Submit", String.valueOf(edit_txt.getText()));
-                    v.getText();
+                    String s = String.valueOf(edit_txt.getText());
+                    Integer k = Integer.valueOf(s);
+                    _baaniPage.changeData(k - 1);
+                    _baaniPage.createScreen();
                     return true;
                 }
                 return false;
