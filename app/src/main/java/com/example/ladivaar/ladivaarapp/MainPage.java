@@ -69,7 +69,7 @@ public class MainPage extends ListFragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         this.index = position;
-        Toast.makeText(getActivity(), "Item  " + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Loading...", Toast.LENGTH_SHORT).show();
         comm.respond(position);
     }
 

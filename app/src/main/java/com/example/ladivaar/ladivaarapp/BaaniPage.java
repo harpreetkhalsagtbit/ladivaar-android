@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by Harpreet on 25-10-2015.
  */
@@ -19,6 +22,14 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
     int index;
     MyTextView text;
     View _v;
+    String[] textArray = new String[0];
+    String[] descriptions = new String[0];
+    MyTextView textView = null;
+    MyTextView tempTextView = null;
+    BaaniPage _this = this;
+    FlowLayout _container = null;
+    String data = null;
+    String tempData = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.baanipage, container, false);
@@ -27,7 +38,7 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.d("Else","OnViewCreated");
+        Log.d("Else", "OnViewCreated");
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -39,45 +50,88 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
 
     public void createScreen() {
         ScrollView baaniContentLayout = (ScrollView) getView().findViewById(R.id.baaniContentLayout);
-        if(baaniContentLayout.getChildCount() > 0) {
-            baaniContentLayout.removeAllViews();
+        // This code will always run on the UI thread, therefore is safe to modify UI elements.
+        _container = (FlowLayout) getView().findViewById(R.id.flow);
+        if (_container.getChildCount() > 0) {
+            _container.removeAllViews();
         }
-        FlowLayout _container = new FlowLayout(getActivity());
-        _container.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
-        _container.setPadding(30,30,0,0);
-        baaniContentLayout.addView(_container);
-        String[] descriptions=getResources().getStringArray(R.array.gurbani);
-        String data = descriptions[index];
-        String[] textArray = data.split("\\s+");
-        Log.d("ds", data );
-        for( int i = 0; i < textArray.length; i++ )
-        {
-            MyTextView textView = new MyTextView(getActivity());
-            textView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-            textView.setText(textArray[i]);
-            _container.addView(textView);
-            textView.setOnTouchListener((View.OnTouchListener) this);
-        }
+        descriptions = getResources().getStringArray(R.array.gurbani);
+        data = descriptions[index];
+        tempData  = data.replaceAll("[\\s\\n]+", "");
+        tempTextView = new MyTextView(getActivity());
+        tempTextView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
+        tempTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        tempTextView.setText(tempData);
+        _container.addView(tempTextView);
+
+//        baaniContentLayout.addView(_container);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // When you need to modify a UI element, do so on the UI thread.
+                // 'getActivity()' is required as this is being ran from a Fragment.
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tempTextView = null;
+                        if (_container != null && _container.getChildCount() > 0) {
+                            _container.removeAllViews();
+                            textArray = data.split("\\s+");
+                            Log.d("ds", data);
+                            for (int i = 0; i < textArray.length; i++) {
+                                textView = new MyTextView(getActivity());
+                                textView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
+                                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                                textView.setId(i);
+                                textView.setText(textArray[i]);
+                                _container.addView(textView);
+                            }
+                            new Timer().schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    // this code will be executed after 2 seconds
+                                    for (int i = 0; i < textArray.length; i++) {
+                                        textView = (MyTextView) getActivity().findViewById(i);
+                                        if (textView != null) {
+                                            textView.setOnTouchListener((View.OnTouchListener) _this);
+                                        }
+                                    }
+                                }
+                            }, 500);
+                        }
+                    }
+                });
+            }
+        }, 800);
         baaniContentLayout.fullScroll(ScrollView.FOCUS_UP);
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        Log.d("Activity Created","Created");
         if(savedInstanceState == null) {
             Log.d("New Create","New Create");
         } else {
-            Log.d("Got index","New Create");
             index = savedInstanceState.getInt("index",0);
-            Log.d("Got index", String.valueOf(index));
         }
         super.onActivityCreated(savedInstanceState);
         createScreen();
     }
 
+    @Override
+    public void onStop() {
+        for (int i = 0; i < textArray.length; i++) {
+            textView = (MyTextView) getActivity().findViewById(i);
+            textView.setOnTouchListener(null);
+        }
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     public void changeData(int index) {
         this.index = index;
-        Log.d("CHange Data", String.valueOf(index));
     }
 
     @Override

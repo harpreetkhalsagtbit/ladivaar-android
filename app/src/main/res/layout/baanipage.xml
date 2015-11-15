@@ -6,4 +6,8 @@
     android:padding="5dp"
     android:id="@+id/baaniContentLayout"
     android:layout_height="match_parent">
+    <com.example.ladivaar.ladivaarapp.FlowLayout
+        android:id="@+id/flow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.example.ladivaar.ladivaarapp.FlowLayout>
 </ScrollView>

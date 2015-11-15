@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements Communicater{
                 if(index > 0) {
                     index--;
                     _baaniPage.changeData(index);
-                    _baaniPage.createScreen();
+//                    _baaniPage.createScreen();
                 }
                 Log.d("Index is", String.valueOf(index));
             }
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements Communicater{
                 Log.d("Index is", String.valueOf(index));
                 index++;
                 _baaniPage.changeData(index);
-                _baaniPage.createScreen();
+//                _baaniPage.createScreen();
 
             }
         });
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements Communicater{
                     String s = String.valueOf(edit_txt.getText());
                     Integer k = Integer.valueOf(s);
                     _baaniPage.changeData(k - 1);
-                    _baaniPage.createScreen();
+//                    _baaniPage.createScreen();
                     return true;
                 }
                 return false;
@@ -85,7 +85,10 @@ public class MainActivity extends AppCompatActivity implements Communicater{
         });
 
         manager = getFragmentManager();
-        _baaniPage = new BaaniPage();
+        if(_baaniPage == null) {
+//            _baaniPage = null;
+            _baaniPage = new BaaniPage();
+        }
         if(savedInstanceState == null) {
             _mainPage = new MainPage();
             FragmentTransaction transaction = manager.beginTransaction();
