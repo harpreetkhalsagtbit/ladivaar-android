@@ -3,12 +3,7 @@ package com.example.ladivaar.ladivaarapp;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements Communicater{
 
@@ -50,8 +46,9 @@ public class MainActivity extends AppCompatActivity implements Communicater{
                 if(index > 0) {
                     index--;
                     _baaniPage.changeData(index);
-//                    _baaniPage.createScreen();
+                    _baaniPage.createScreen();
                 }
+                Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();
                 Log.d("Index is", String.valueOf(index));
             }
         });
@@ -63,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements Communicater{
                 Log.d("Index is", String.valueOf(index));
                 index++;
                 _baaniPage.changeData(index);
-//                _baaniPage.createScreen();
+                Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();
+                _baaniPage.createScreen();
 
             }
         });
@@ -77,7 +75,8 @@ public class MainActivity extends AppCompatActivity implements Communicater{
                     String s = String.valueOf(edit_txt.getText());
                     Integer k = Integer.valueOf(s);
                     _baaniPage.changeData(k - 1);
-//                    _baaniPage.createScreen();
+                    Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();
+                    _baaniPage.createScreen();
                     return true;
                 }
                 return false;

@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,11 +25,13 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
     String[] textArray = new String[0];
     String[] descriptions = new String[0];
     MyTextView textView = null;
-    MyTextView tempTextView = null;
     BaaniPage _this = this;
     FlowLayout _container = null;
     String data = null;
-    String tempData = null;
+    int count=0;
+    String _str = "";
+    String arrPanktiyaanOfAng[] = new String[0];
+    int modVal = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.baanipage, container, false);
@@ -49,61 +51,88 @@ public class BaaniPage extends Fragment implements View.OnTouchListener{
     }
 
     public void createScreen() {
-        ScrollView baaniContentLayout = (ScrollView) getView().findViewById(R.id.baaniContentLayout);
-        // This code will always run on the UI thread, therefore is safe to modify UI elements.
-        _container = (FlowLayout) getView().findViewById(R.id.flow);
-        if (_container.getChildCount() > 0) {
-            _container.removeAllViews();
-        }
-        descriptions = getResources().getStringArray(R.array.gurbani);
-        data = descriptions[index];
-        tempData  = data.replaceAll("[\\s\\n]+", "");
-        tempTextView = new MyTextView(getActivity());
-        tempTextView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
-        tempTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-        tempTextView.setText(tempData);
-        _container.addView(tempTextView);
+        try {
+            ScrollView baaniContentLayout = (ScrollView) getView().findViewById(R.id.baaniContentLayout);
+            // This code will always run on the UI thread, therefore is safe to modify UI elements.
+            _container = (FlowLayout) getView().findViewById(R.id.flow);
+            if (_container.getChildCount() > 0) {
+                _container.removeAllViews();
+            }
+            descriptions = getResources().getStringArray(R.array.gurbani);
+            data = descriptions[index];
+            MyTextView tempTextView = new MyTextView(getActivity());
+            tempTextView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
+            tempTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+            tempTextView.setText("");
+            _container.addView(tempTextView);
+            arrPanktiyaanOfAng = data.split("\\n");
+            count=0;
+            Log.d("length", String.valueOf(arrPanktiyaanOfAng.length));
+            Log.d("length mod 4", String.valueOf((double)arrPanktiyaanOfAng.length / 4));
+            modVal = (int) Math.ceil((double)arrPanktiyaanOfAng.length / 4);
+            Log.d("length mod 4", String.valueOf((double)modVal));
 
-//        baaniContentLayout.addView(_container);
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // When you need to modify a UI element, do so on the UI thread.
-                // 'getActivity()' is required as this is being ran from a Fragment.
-                getActivity().runOnUiThread(new Runnable() {
+            for(int i=0;i<=modVal;i++) {
+                Log.d("i value", String.valueOf(i));
+                new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        tempTextView = null;
-                        if (_container != null && _container.getChildCount() > 0) {
-                            _container.removeAllViews();
-                            textArray = data.split("\\s+");
-                            Log.d("ds", data);
-                            for (int i = 0; i < textArray.length; i++) {
-                                textView = new MyTextView(getActivity());
-                                textView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
-                                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                                textView.setId(i);
-                                textView.setText(textArray[i]);
-                                _container.addView(textView);
-                            }
-                            new Timer().schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    // this code will be executed after 2 seconds
-                                    for (int i = 0; i < textArray.length; i++) {
-                                        textView = (MyTextView) getActivity().findViewById(i);
-                                        if (textView != null) {
-                                            textView.setOnTouchListener((View.OnTouchListener) _this);
+                        // When you need to modify a UI element, do so on the UI thread.
+                        // 'getActivity()' is required as this is being ran from a Fragment.
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (_container != null && _container.getChildCount() > 0) {
+//                                _container.removeAllViews();
+                                    _str = "";
+                                    count += modVal;
+                                    for(int j=count-modVal;j<count;j++) {
+                                        Log.d("J value", String.valueOf(j));
+                                        try {
+                                            _str = _str.concat(arrPanktiyaanOfAng[j]);
+                                            _str = _str.concat("\n");
+                                        } catch(ArrayIndexOutOfBoundsException err) {
+                                            break;
                                         }
                                     }
+                                    Log.d("here", "..............");
+                                    Log.d("here", _str);
+
+                                    textArray = _str.split("\\s+");
+                                    for (int k = 0; k < textArray.length; k++) {
+                                        textView = new MyTextView(getActivity());
+                                        textView.setCustomFontTypeFace("NotoSansGurmukhi-Regular.ttf");
+                                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+                                        textView.setId(k);
+                                        textView.setText(textArray[k]);
+                                        _container.addView(textView);
+                                        textView.setOnTouchListener((View.OnTouchListener) _this);
+                                    }
+//                                new Timer().schedule(new TimerTask() {
+//                                    @Override
+//                                    public void run() {
+//                                        // this code will be executed after 2 seconds
+//                                        for (int i = 0; i < textArray.length; i++) {
+//                                            textView = (MyTextView) getActivity().findViewById(i);
+//                                            if (textView != null) {
+//                                                textView.setOnTouchListener((View.OnTouchListener) _this);
+//                                            }
+//                                        }
+//                                    }
+//                                }, 150 * count);
                                 }
-                            }, 500);
-                        }
+                            }
+                        });
                     }
-                });
+                }, 300 * i);
             }
-        }, 800);
-        baaniContentLayout.fullScroll(ScrollView.FOCUS_UP);
+//        baaniContentLayout.addView(_container);
+
+            baaniContentLayout.fullScroll(ScrollView.FOCUS_UP);
+
+        } catch(Exception err) {
+            Log.d("err","err");
+        }
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
